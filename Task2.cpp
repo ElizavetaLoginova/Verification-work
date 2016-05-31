@@ -1,145 +1,112 @@
 #include <iostream>
+#include <io.h>
 #include <fstream>
 
 using namespace std;
 
-void InitFile(char*);
-void SystemFun();
-void InitNumber(long&);
-void ChangeFile(char*, int*, int);
-int HowMuch(int*, int, int&);
-int* InitArray(char* fileName, int n);
-int ContentsFile(char*);
+void CreateFile(char*, int);
+void ChangeContentFile(char*, char*);
+void DisplayContentFile(char*);
+
+const int N = 30;
+const int n = 7;
 
 int main()
 {
-	char fileName[20];
-	cout << "Enter the name of the file: ";
-	cin >> fileName;
-	system("cls");
-
-	InitFile(fileName);
-	int n = ContentsFile(fileName);
-
-	int* array = InitArray(fileName, n);
-	ChangeFile(fileName, array, n);
-
+	char fileName[N] = "", fileName1[N] = "";
+	cout << "Enter the name of file: ";
+	cin.getline(fileName, N, '\n');
+	cout << "Enter the name of new file: ";
+	cin.getline(fileName1, N, '\n');
+	CreateFile(fileName, n);
+	DisplayContentFile(fileName);
+	ChangeContentFile(fileName, fileName1);
+	cout << endl;
+	DisplayContentFile(fileName1);
 	system("pause");
 	return 0;
-
 }
 
-
-
-
-
-
-
-
-
-
-
-
-int ContentsFile(char* fileName)
+void DisplayContentFile(char* fileName)
 {
-	ifstream streamIn(fileName);
+	ifstream streamIn(fileName, ios::binary);
 	if (!streamIn.is_open())
 	{
-		cout << "Cannot open file to read!" << endl;
+		cout << "Can't open file to read!";
+		cout << endl;
 		system("pause");
-		exit(1);
+		system("cls");
+		return;
 	}
-	int count = 0, term;
-	while (!streamIn.eof())
+	int bufSize = sizeof(int);
+	int a;
+	while (streamIn.read((char*)&a, bufSize))
 	{
-		streamIn >> term;
-		count++;
+		cout << a;
+		cout.width(3);
 	}
 	streamIn.close();
-	return count;
 }
 
-
-void InitFile(char* fileName)
+void CreateFile(char* fileName, int n)
 {
 	ofstream streamOut;
 	streamOut.open(fileName, ios::binary);
 	if (!streamOut.is_open())
 	{
 		cout << "\nCan't open file to write!";
-		SystemFun();
+		cout << endl;
+		system("pause");
+		system("cls");
 		return;
 	}
-	int temp, n=10;
+	int bufSize = sizeof(int);
+	int a;
+	char Ok = 'y';
+	while (Ok == 'y')
+	{
 		for (int i = 0; i < n; i++)
 		{
-			cout << "enter temp variable:";
-			cin >> temp;
-			//temp = i + 1;
-			streamOut.width(5);
-			streamOut << temp;
-			//cout << temp << endl;
+			cin >> a;
+			streamOut.write((char*)&a, bufSize);
 		}
+		cout << " If do you want to continue, press 'y' :";
+		cin >> Ok;
+	}
 	streamOut.close();
 }
-void SystemFun()
-{
-	cout << endl;
-	system("pause");
-	system("cls");
-}
 
-void ChangeFile(char* fileName, int* array, int n)
+void ChangeContentFile(char* fileName, char* fileName1)
 {
 	fstream streamInOut(fileName, ios::in | ios::out | ios::binary);
+	fstream stream1InOut(fileName1, ios::in | ios::out | ios::binary);
 	if (!streamInOut)
 	{
 		cout << "Can't open file to read and write!";
-		SystemFun();
+		cout << endl;
+		system("pause");
+		system("cls");
 		return;
 	}
-	int i = 0;
-	int bufSize = sizeof(array);
-	while (i != bufSize)
+	int bufSize = sizeof(int);
+	int a1, a2;
+	int count = 1;
+	streamInOut.read((char*)&a1, bufSize);
+	while (streamInOut.read((char*)&a2, bufSize))
 	{
-		int k = HowMuch(array, bufSize, i);
-		streamInOut.seekp((i - 1) * bufSize, ios::beg);
-		streamInOut.write((char*)&k, bufSize);
-		streamInOut.close();
+		stream1InOut.write((char*)&a1, bufSize);
+		if (a1 == a2)
+		{
+			count++;
+		}
+		else
+		{
+			stream1InOut.write((char*)&count, bufSize);
+			count = 1;
+		}
+		a1 = a2;
 	}
-}
-
-void InitNumber(long& n)
-{
-	cout << "Enter the number of record:" << endl;
-	cin >> n;
-	system("cls");
-}
-
-int HowMuch(int* array, int n, int& i)
-{
-	int counter = 0;
-	for (i; i < n; i++)
-	{
-		int num = array[i];
-		if (array[i] == num)
-			counter++;
-	}
-	return counter;
-}
-
-int* InitArray(char* fileName, int n)
-{
-	ifstream streamIn(fileName);
-	if (!streamIn.is_open())
-	{
-		cout << "Cannot open file to read!" << endl;
-		system("pause");
-		exit(1);
-	}
-	int* arr = new int[n];
-	for (int i = 0; i < n; i++)
-		streamIn >> arr[i];
-	streamIn.close();
-	return arr;
+	stream1InOut.write((char*)&a1, bufSize);
+	stream1InOut.write((char*)&count, bufSize);
+	streamInOut.close();
 }
