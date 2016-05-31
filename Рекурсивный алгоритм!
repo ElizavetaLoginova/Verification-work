@@ -1,0 +1,62 @@
+#include <iostream>
+
+using namespace std;
+
+int* AllocMemory(int);
+void DisplayArray(int*, int);
+int FindMaximum(int*, int, int);
+int Max(int, int);
+
+int main()
+{
+	int n;
+	while (true)
+	{
+		cout << "Enter n > 0: ";
+		cin >> n;
+		if (n > 0) break;
+		cout << "Incorrect n. Try again." << endl;
+		system("pause");
+		system("cls");
+	}
+	system("cls");
+	int* arr = AllocMemory(n);
+	DisplayArray(arr, n);
+	cout << endl << "Maximum: " << FindMaximum(arr, 0, n) << endl;
+	delete[] arr;
+	system("pause");
+	return 0;
+}
+
+
+int* AllocMemory(int n)
+{
+	int* a = new int[n];
+	for (int* p = a; p < a + n; p++)
+	{
+		*p = rand() % 100 - 50;
+	}
+	return a;
+}
+
+int FindMaximum(int* a, int left, int right)
+{
+	if (left == right) return a[left];
+	int middle = (right + left) / 2;
+
+	return Max(FindMaximum(a, left, middle), FindMaximum(a, middle + 1, right));
+}
+
+void DisplayArray(int* a, int n)
+{
+	for (int* p = a; p < a + n; p++)
+	{
+		cout << *p << " ";
+	}
+}
+
+int Max(int a, int b)
+{
+	if (a > b) return a;
+	else return b;
+}
