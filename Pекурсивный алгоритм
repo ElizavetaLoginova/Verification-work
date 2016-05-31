@@ -1,0 +1,66 @@
+int* AllocMemory(int);
+void DisplayArray(int*, int);
+int FindMaximum(int*, int);
+int FindMaximum(int*, int, int);
+int Max(int, int);
+
+int main()
+{
+	int n;
+	while (true)
+	{
+		cout << "Enter the amount of elements (n <= 100): ";
+		cin >> n;
+		if (n > 0 && n <= 100) break; 
+		cout << "Error! Try again...";
+	}
+	int num;
+	int* a = AllocMemory(n);
+	DisplayArray(a, n);
+	num = FindMaximum(a, n);
+	cout << "Maximum: a[" << num << "] = " << a[num] << endl;
+	system("pause");
+	return 0;
+}
+
+
+int* AllocMemory(int n)
+{
+		int* a = new int[n];
+		for (int i = 0; i < n; i++)
+		{
+			a[i] = 0;
+		}
+
+		for (int* p = a; p < a + n; p++)
+			*p = rand() % 200 - 100;
+		return a;
+}
+
+void DisplayArray(int* a, int n)
+{
+	for (int i = 0; i < n; i++)
+	{
+		cout << " " << a[i];
+	}
+	cout << endl;
+}
+
+int FindMaximum(int* a, int n)
+{
+	return FindMaximum(a, n, 0);
+}
+
+int FindMaximum(int* a, int n, int k)
+{
+	if (k == n - 1) return k;
+	int m = FindMaximum(a, n, k + 1);
+	if (Max(a[m], a[k]) == a[m]) return m;
+	else return k;
+}
+
+int Max(int a, int b)
+{
+	if (a > b) return a;
+	else return b;
+}
