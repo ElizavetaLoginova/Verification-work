@@ -63,9 +63,10 @@ void CreateNewFile(char* fileName1, char* fileName2, char* fileName)
 	int a1, a2;
 	streamIn1 >> a1;
 	streamIn2 >> a2;
-	streamOut.width(5);
+	
 	while ((!streamIn1.eof()) && (!streamIn2.eof()))
-	{			
+	{
+		streamOut.width(5);
 			if (a1 > a2)
 			{
 				streamOut << a2;
@@ -78,7 +79,24 @@ void CreateNewFile(char* fileName1, char* fileName2, char* fileName)
 				streamIn1 >> a1;
 			}
 	}
-	streamOut << a1;
+
+do
+	{
+		streamIn1 >> a1;
+		streamOut.width(5);
+		streamOut << a1;
+}
+while (!streamIn1.eof());
+
+
+	do 
+	{
+		streamIn2 >> a2;
+		streamOut.width(5);
+		streamOut << a2;
+	} 
+	while (!streamIn2.eof());
+
 
 	streamIn1.close();
 	streamIn2.close();
@@ -105,4 +123,6 @@ void ShowContentsFile(char* fileName)
 		cout << String << endl;
 	}
 }
+
+
 
